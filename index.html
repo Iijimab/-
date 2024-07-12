@@ -2,74 +2,129 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>ToDoアプリ</title>
+  <title>CodePen - untilpen</title>
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css'>
 <link rel='stylesheet' href='https://unpkg.com/@mdi/font@6.x/css/materialdesignicons.min.css'>
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900'><link rel="stylesheet" href="./style.css">
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900'>
 
 </head>
 <body>
 <!-- partial:index.partial.html -->
-<!-- Vueで指定された"app"要素、この中でのみVueが有効 -->
 <div id="app">
   <v-app>
     <v-content>
       <v-container>
-        <v-row
-          class="text-h3 mb-3 mt-3"
-          justify="center"
-          >
+        <v-row class="text-h3 mb-3 mt-3" justify="center" style="color: #36ABB5;">
           My ToDo App
         </v-row>
-        <v-row
-          class="mb-3 mt-3"
-          align="center"
-          justify="center"
-          >
-          <v-col 
-            cols="6"            
-            >
+        <v-row class="mb-3 mt-3" align="center" justify="center">
+          <v-col cols="6">
             <v-text-field
-                  class="ml-6 mr-6"
-                  v-model:value="task"                         
-                  label="タスクを入力"
-                  placeholder="タスクを入力…"
-                  outlined
-            >
+              class="ml-6 mr-6"
+              v-model="task"
+              label="タスクを入力"
+              placeholder="タスクを入力…"
+              outlined
+              color="primary"
+            ></v-text-field>
           </v-col>
         </v-row>
-        <v-row
-          class="mb-3 mt-3"
-          align="center"
-          justify="center"
-          >
+        <v-row class="mb-3 mt-3" align="center" justify="center">
+          <v-col cols="6">
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="selectedDate"
+                  label="日付を選択"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                  color="secondary"
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="selectedDate" @input="menu = false" color="accent"></v-date-picker>
+            </v-menu>
+          </v-col>
+        </v-row>
+        <v-row class="mb-3 mt-3" align="center" justify="center">
+          <v-btn v-on:click="addTask" fab dark small color="primary" style="margin-right: 16px;">
+            <v-icon dark>mdi-plus</v-icon>
+          </v-btn>
           タスク内容：{{ task }}
-          <v-btn v-on:click="addTask"
-               fab
-               dark
-               small               
-               color="indigo"
-               >
-                 <v-icon dark>
-                   mdi-plus
-                 </v-icon>
-               </v-btn>
         </v-row>
-        <v-row
-          class="mb-3 mt-3"
-          justify="center"
-          > 
-          <v-btn v-on:click="clearAll"
-                 
-                 rounded
-                 >全てのToDoをクリア</v-btn>
+        <v-row class="mb-3 mt-3" justify="center">
+          <v-btn v-on:click="clearAll" rounded color="accent">全てのToDoをクリア</v-btn>
+          <v-btn v-on:click="clearDayTasks" rounded color="secondary">選択日のToDoをクリア</v-btn>
         </v-row>
-        <v-row 
-          class="mb-3 mt-3"
-          justify="center"
-          v-for="todo in todoList">
-          {{ todo }}
+        
+        <!-- カレンダーの追加部分 -->
+        <v-row justify="center" align="center">
+          <v-col cols="12" md="8">
+            <v-sheet tile height="54" class="d-flex" color="background">
+              <v-btn icon class="ma-2" @click="$refs.calendar.prev()" color="secondary">
+                <v-icon>mdi-chevron-left</v-icon>
+              </v-btn>
+              <v-select
+                v-model="type"
+                :items="types"
+                dense
+                outlined
+                hide-details
+                class="ma-2"
+                label="type"
+                color="accent"
+              ></v-select>
+              <v-select
+                v-model="mode"
+                :items="modes"
+                dense
+                outlined
+                hide-details
+                label="event-overlap-mode"
+                class="ma-2"
+                color="primary"
+              ></v-select>
+              <v-select
+                v-model="weekday"
+                :items="weekdays"
+                dense
+                outlined
+                hide-details
+                label="weekdays"
+                class="ma-2"
+                color="info"
+              ></v-select>
+              <v-spacer></v-spacer>
+              <v-btn icon class="ma-2" @click="$refs.calendar.next()" color="secondary">
+                <v-icon>mdi-chevron-right</v-icon>
+              </v-btn>
+            </v-sheet>
+            <v-sheet height="600" color="background">
+              <v-calendar
+                ref="calendar"
+                v-model="value"
+                :weekdays="weekday"
+                :type="type"
+                :events="todoEvents"
+                :event-overlap-mode="mode"
+                :event-overlap-threshold="30"
+                :event-color="getEventColor"
+                color="background"
+              ></v-calendar>
+            </v-sheet>
+          </v-col>
         </v-row>
+        <!-- ここまでカレンダー追加部分 -->
+        
       </v-container>
     </v-content>
   </v-app>

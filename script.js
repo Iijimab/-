@@ -39,6 +39,7 @@ const app = new Vue({
         };
         this.todoEvents.push(newEvent);
         this.todoList.unshift(this.task);
+        this.saveToLocalStorage();
         this.task = '';
         this.selectedDate = '';
         console.log('現在のToDo一覧：', this.todoList);
@@ -47,12 +48,23 @@ const app = new Vue({
     clearAll() {
       this.todoList = [];
       this.todoEvents = [];
+      this.saveToLocalStorage();
       console.log('全てのToDoが消去されました');
     },
     clearDayTasks() {
       if (this.selectedDate) {
         this.todoEvents = this.todoEvents.filter(event => event.start !== this.selectedDate);
+        this.saveToLocalStorage();
         console.log(`${this.selectedDate}のToDoが消去されました`);
+      }
+    },
+    saveToLocalStorage() {
+      localStorage.setItem('todoEvents', JSON.stringify(this.todoEvents));
+    },
+    loadFromLocalStorage() {
+      const savedEvents = localStorage.getItem('todoEvents');
+      if (savedEvents) {
+        this.todoEvents = JSON.parse(savedEvents);
       }
     },
     getEventColor(event) {
@@ -61,6 +73,9 @@ const app = new Vue({
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
+  },
+  mounted() {
+    this.loadFromLocalStorage();
   },
 });
 

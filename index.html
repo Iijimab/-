@@ -2,7 +2,7 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>DayDay</title>
+  <title>CodePen - untilpen</title>
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css'>
 <link rel='stylesheet' href='https://unpkg.com/@mdi/font@6.x/css/materialdesignicons.min.css'>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900'>
@@ -14,12 +14,9 @@
   <v-app>
     <v-content>
       <v-container>
-        <!-- タイトル -->
         <v-row class="text-h3 mb-3 mt-3" justify="center" style="color: #36ABB5;">
           My ToDo App
         </v-row>
-
-        <!-- タスク入力フィールド -->
         <v-row class="mb-3 mt-3" align="center" justify="center">
           <v-col :cols="isMobile ? 12 : 6">
             <v-text-field
@@ -32,8 +29,6 @@
             ></v-text-field>
           </v-col>
         </v-row>
-
-        <!-- 日付選択フィールド -->
         <v-row class="mb-3 mt-3" align="center" justify="center">
           <v-col :cols="isMobile ? 12 : 6">
             <v-menu
@@ -60,22 +55,16 @@
             </v-menu>
           </v-col>
         </v-row>
-
-        <!-- タスク追加ボタン -->
         <v-row class="mb-3 mt-3" align="center" justify="center">
           <v-btn v-on:click="addTask" fab dark small color="primary" style="margin-right: 16px;">
             <v-icon dark>mdi-plus</v-icon>
           </v-btn>
           タスク内容：{{ task }}
         </v-row>
-
-        <!-- ToDoクリアボタン -->
         <v-row class="mb-3 mt-3" justify="center">
           <v-btn v-on:click="clearAll" rounded color="accent">全てのToDoをクリア</v-btn>
           <v-btn v-on:click="clearDayTasks" rounded color="secondary">選択日のToDoをクリア</v-btn>
         </v-row>
-
-        <!-- カレンダー -->
         <v-row justify="center" align="center">
           <v-col :cols="12" :md="isMobile ? 12 : 8">
             <v-sheet tile height="54" class="d-flex" color="background">
@@ -128,7 +117,23 @@
                 :event-overlap-threshold="30"
                 :event-color="getEventColor"
                 color="background"
-              ></v-calendar>
+              >
+                <template v-slot:event="{ event }">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div
+                        class="event"
+                        v-bind="attrs"
+                        v-on="on"
+                        :title="event.name"
+                      >
+                        {{ event.name.length > 20 ? event.name.slice(0, 20) + '...' : event.name }}
+                      </div>
+                    </template>
+                    <span>{{ event.name }}</span>
+                  </v-tooltip>
+                </template>
+              </v-calendar>
             </v-sheet>
           </v-col>
         </v-row>
@@ -136,6 +141,14 @@
     </v-content>
   </v-app>
 </div>
+
+<style>
+  .event {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
 <!-- partial -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js'></script><script  src="./script.js"></script>

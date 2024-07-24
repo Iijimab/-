@@ -23,6 +23,11 @@ const app = new Vue({
     colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
     names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
   },
+  computed: {
+    isMobile() {
+      return this.$vuetify.breakpoint.smAndDown;
+    }
+  },
   methods: {
     addTask() {
       if (this.task && this.selectedDate) {
@@ -58,6 +63,7 @@ const app = new Vue({
     },
   },
 });
+
 const vuetify = new Vuetify({
   theme: {
     themes: {

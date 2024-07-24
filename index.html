@@ -2,7 +2,7 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - untilpen</title>
+  <title>DayDay</title>
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css'>
 <link rel='stylesheet' href='https://unpkg.com/@mdi/font@6.x/css/materialdesignicons.min.css'>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900'>
@@ -14,11 +14,14 @@
   <v-app>
     <v-content>
       <v-container>
+        <!-- タイトル -->
         <v-row class="text-h3 mb-3 mt-3" justify="center" style="color: #36ABB5;">
           My ToDo App
         </v-row>
+
+        <!-- タスク入力フィールド -->
         <v-row class="mb-3 mt-3" align="center" justify="center">
-          <v-col cols="6">
+          <v-col :cols="isMobile ? 12 : 6">
             <v-text-field
               class="ml-6 mr-6"
               v-model="task"
@@ -29,8 +32,10 @@
             ></v-text-field>
           </v-col>
         </v-row>
+
+        <!-- 日付選択フィールド -->
         <v-row class="mb-3 mt-3" align="center" justify="center">
-          <v-col cols="6">
+          <v-col :cols="isMobile ? 12 : 6">
             <v-menu
               ref="menu"
               v-model="menu"
@@ -55,20 +60,24 @@
             </v-menu>
           </v-col>
         </v-row>
+
+        <!-- タスク追加ボタン -->
         <v-row class="mb-3 mt-3" align="center" justify="center">
           <v-btn v-on:click="addTask" fab dark small color="primary" style="margin-right: 16px;">
             <v-icon dark>mdi-plus</v-icon>
           </v-btn>
           タスク内容：{{ task }}
         </v-row>
+
+        <!-- ToDoクリアボタン -->
         <v-row class="mb-3 mt-3" justify="center">
           <v-btn v-on:click="clearAll" rounded color="accent">全てのToDoをクリア</v-btn>
           <v-btn v-on:click="clearDayTasks" rounded color="secondary">選択日のToDoをクリア</v-btn>
         </v-row>
-        
-        <!-- カレンダーの追加部分 -->
+
+        <!-- カレンダー -->
         <v-row justify="center" align="center">
-          <v-col cols="12" md="8">
+          <v-col :cols="12" :md="isMobile ? 12 : 8">
             <v-sheet tile height="54" class="d-flex" color="background">
               <v-btn icon class="ma-2" @click="$refs.calendar.prev()" color="secondary">
                 <v-icon>mdi-chevron-left</v-icon>
@@ -123,8 +132,6 @@
             </v-sheet>
           </v-col>
         </v-row>
-        <!-- ここまでカレンダー追加部分 -->
-        
       </v-container>
     </v-content>
   </v-app>
